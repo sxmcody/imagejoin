@@ -1,5 +1,7 @@
 # -*- coding: UTF-8 -*-
-#无缝拼接多张图片，拼接生成的图片位于与python文件同目录下。由于是通过数组拼接，所以要求待拼接的图片宽度必须完全一致。
+#无缝拼接多张图片，拼接生成的图片位于与python文件同目录下。
+#将第一张图片宽度尺寸作为基准，其余图片将更改为与其一致。
+
 import numpy as np
 import os
 from PIL import Image
@@ -16,13 +18,26 @@ def file_filter(f):
 
 images = list(filter(file_filter,allfiles))
 
-im = []  #建立一个列表，后面将数组存储到列表中
+new_images = []  #建立一个列表，稍后依次将打开的图片存入其中
+
+resized_images = []  #建立一个新列表，稍后将更改过图片尺寸后的图片存入其中
+
 
 for image in images:
     #依次打开图片（输入的路径+图片文件名得到实际图片路径）
-    imgopen = Image.open(imgdir+"\\"+image)
-    im.append(np.array(imgopen))  #转化为ndarray对象并存入列表
+    imgopen = Image.open(imgdir +"\\"+ image)
+    new_images.append(imgopen)  #将图片存入列表
+   
+#通过循环，将列表里的每张图片的宽度尺寸以第一张图片为基准重设
+for im in new_images:
+    if im == new_images[0]:  #第一张图片略过处理
+        pass
+    elif im.size[0]== new_images[0].size[0]:  #增加一个判断，如果图片与第一张图片宽度一样，那么略过重设大小
+        pass
+    else:
+        im = im.resize((new_images[0].size[0],int(new_images[0].size[0]*im.size[1]/im.size[0])),Image.BILINEAR)
+    resized_images.append(np.array(im))  #将更改过尺寸的图片转化为ndarray对象并存入列表
 
-imgjoin = np.concatenate(im,axis = 0)  #拼接图片，axis=0为纵向拼接
+imgjoin = np.concatenate(resized_images,axis = 0)  #拼接图片，axis=0为纵向拼接
 imgcreate = Image.fromarray(imgjoin)  #生成图片
 imgcreate.save('final.jpg')  #保存图片并以final.jpg命名
