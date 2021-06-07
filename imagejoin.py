@@ -36,12 +36,12 @@ def main():
         elif im.size[0]== new_images[0].size[0]:  #增加一个判断，如果图片与第一张图片宽度一样，那么略过重设大小
             pass
         else:
-            im = im.resize((new_images[0].size[0],int(new_images[0].size[0]*im.size[1]/im.size[0])),Image.BILINEAR)
+            im = im.resize((new_images[0].size[0],int(new_images[0].size[0]*im.size[1]/im.size[0])),Image.ANTIALIAS)
         resized_images.append(np.array(im))  #将更改过尺寸的图片转化为ndarray对象并存入列表
 
     imgjoin = np.concatenate(resized_images,axis = 0)  #拼接图片，axis=0为纵向拼接
     imgcreate = Image.fromarray(imgjoin)  #生成图片
-    imgcreate.save('final.jpg')  #保存图片并以final.jpg命名
+    imgcreate.save('final.png')  #保存图片并以final.png命名，经测试，png可以最低程度地减少图片质量损失
 
 if __name__ == '__main__':
     main()
