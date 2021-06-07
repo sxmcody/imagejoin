@@ -41,7 +41,7 @@ def main():
 
     imgjoin = np.concatenate(resized_images,axis = 0)  #拼接图片，axis=0为纵向拼接
     imgcreate = Image.fromarray(imgjoin)  #生成图片
-    imgcreate.save('final.png')  #保存图片并以final.png命名，经测试，png可以最低程度地减少图片质量损失
+    imgcreate.save('final.png')  #保存图片并以final.png命名，经测试，png可以尽可能地减少图片质量损失
 
 if __name__ == '__main__':
     main()
